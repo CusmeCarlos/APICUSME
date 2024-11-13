@@ -47,7 +47,9 @@ export async function procesarCompra(req, res) {
     await conmysql.rollback();
     res.status(500).json({ error: 'Error al procesar la compra' });
   } finally {
-    // Liberar la conexión del pool
-    await conmysql.release();
+    // Liberar la conexión del pool (solo cuando se usa una conexión individual)
+    if (connection) {
+      connection.release();
+    }
   }
 }
