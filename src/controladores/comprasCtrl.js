@@ -1,4 +1,4 @@
-import { conmysql } from '../db.js';  // Suponiendo que 'conmysql' es tu conexión a la base de datos
+import { conmysql } from '../db.js';  // Importar el pool de conexiones
 
 export async function procesarCompra(req, res) {
   const { clienteId, productos } = req.body;
@@ -16,55 +16,38 @@ export async function procesarCompra(req, res) {
   }
 
   try {
-    // Iniciar la transacción para asegurar la atomicidad
-    conmysql.beginTransaction((err) => {
-      if (err) {
-        return res.status(500).json({ error: 'Error al iniciar la transacción' });
-      }
+    // Obtener la conexión del pool
+    const connection = await conmysql.getConnection();
 
-      // Insertar la compra en la tabla de compras
-      const sqlCompra = 'INSERT INTO compras (cliente_id, fecha_compra) VALUES (?, NOW())';
-      conmysql.query(sqlCompra, [clienteId], (err, result) => {
-        if (err) {
-          return conmysql.rollback(() => {
-            res.status(500).json({ error: 'Error al insertar la compra' });
-          });
-        }
+    // Iniciar la transacción
+    await connection.beginTransaction();
 
-        // Obtener el ID de la compra recién insertada
-        const compraId = result.insertId;
+    // Insertar la compra en la tabla de compras
+    const [result] = await connection.execute('INSERT INTO compras (cliente_id, fecha_compra) VALUES (?, NOW())', [clienteId]);
 
-        // Insertar los productos en la tabla de detalles de compra
-        const productosValues = productos.map(producto => [
-          compraId,
-          producto.prod_id,
-          producto.cantidad
-        ]);
+    // Obtener el ID de la compra recién insertada
+    const compraId = result.insertId;
 
-        const sqlDetallesCompra = 'INSERT INTO detalles_compra (compra_id, prod_id, cantidad) VALUES ?';
-        conmysql.query(sqlDetallesCompra, [productosValues], (err) => {
-          if (err) {
-            return conmysql.rollback(() => {
-              res.status(500).json({ error: 'Error al insertar los productos en la compra' });
-            });
-          }
+    // Insertar los productos en la tabla de detalles de compra
+    const productosValues = productos.map(producto => [
+      compraId,
+      producto.prod_id,
+      producto.cantidad
+    ]);
 
-          // Si todo fue exitoso, confirmar la transacción
-          conmysql.commit((err) => {
-            if (err) {
-              return conmysql.rollback(() => {
-                res.status(500).json({ error: 'Error al confirmar la transacción' });
-              });
-            }
+    await connection.query('INSERT INTO detalles_compra (compra_id, prod_id, cantidad) VALUES ?', [productosValues]);
 
-            // Responder al cliente con éxito
-            res.status(201).json({ message: 'Compra realizada con éxito' });
-          });
-        });
-      });
-    });
+    // Confirmar la transacción si todo fue bien
+    await connection.commit();
+
+    // Responder al cliente con éxito
+    res.status(201).json({ message: 'Compra realizada con éxito' });
   } catch (error) {
-    console.error('Error al procesar la compra:', error);
+    // Si hay algún error, deshacer la transacción
+    await conmysql.rollback();
     res.status(500).json({ error: 'Error al procesar la compra' });
+  } finally {
+    // Liberar la conexión del pool
+    await conmysql.release();
   }
 }
