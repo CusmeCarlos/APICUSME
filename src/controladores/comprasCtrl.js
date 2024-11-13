@@ -33,9 +33,10 @@ export const agregarAlCarrito = async (req, res) => {
         if (productoExistente.length > 0) {
             // Si el producto ya está en el carrito, actualizar la cantidad
             await conmysql.execute(
-                `UPDATE carrito SET cantidad = cantidad + ?, precio = ? WHERE cliente_id = ? AND producto_id = ?`,
-                [cantidad, precio, cliente_id, producto_id]
-            );
+                `UPDATE carrito SET compra_id = ? WHERE cliente_id = ? AND compra_id IS NULL`,
+                [compra_id, cliente_id]
+              );
+              
         } else {
             // Si el producto no está en el carrito, agregarlo
             await conmysql.execute(
