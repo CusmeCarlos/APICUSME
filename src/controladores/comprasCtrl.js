@@ -17,7 +17,7 @@ export async function procesarCompra(req, res) {
 
   try {
     // Iniciar la transacción para asegurar la atomicidad
-    conmysql.beginTransaction(function(err) {
+    conmysql.beginTransaction((err) => {
       if (err) {
         return res.status(500).json({ error: 'Error al iniciar la transacción' });
       }
@@ -27,7 +27,7 @@ export async function procesarCompra(req, res) {
       conmysql.query(sqlCompra, [clienteId], (err, result) => {
         if (err) {
           return conmysql.rollback(() => {
-            return res.status(500).json({ error: 'Error al insertar la compra' });
+            res.status(500).json({ error: 'Error al insertar la compra' });
           });
         }
 
@@ -45,7 +45,7 @@ export async function procesarCompra(req, res) {
         conmysql.query(sqlDetallesCompra, [productosValues], (err) => {
           if (err) {
             return conmysql.rollback(() => {
-              return res.status(500).json({ error: 'Error al insertar los productos en la compra' });
+              res.status(500).json({ error: 'Error al insertar los productos en la compra' });
             });
           }
 
@@ -53,7 +53,7 @@ export async function procesarCompra(req, res) {
           conmysql.commit((err) => {
             if (err) {
               return conmysql.rollback(() => {
-                return res.status(500).json({ error: 'Error al confirmar la transacción' });
+                res.status(500).json({ error: 'Error al confirmar la transacción' });
               });
             }
 
