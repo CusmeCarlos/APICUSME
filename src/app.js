@@ -5,7 +5,8 @@ import { fileURLToPath } from 'url';
 import clientesRoutes from './routes/clientes.routes.js';
 import usuariosRoutes from './routes/usuarios.routes.js';
 import productosRoutes from './routes/productos.routes.js';
-import carritoRoutes from './routes/carrito.routes.js'; // Importa las rutas del carrito
+import carritoRoutes from './routes/carrito.routes.js';
+import comprasRoutes from './routes/compras.routes.js';
 // definir módulo de ES
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -26,7 +27,8 @@ app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
 app.use('/api', clientesRoutes);
 app.use('/api', usuariosRoutes);
 app.use('/api', productosRoutes);
-app.use('/api', carritoRoutes); // Añade las rutas del carrito
+app.use('/api', carritoRoutes);
+app.use('/api', comprasRoutes);
 
 // Manejo de rutas no encontradas
 app.use((req, res, next) => {
