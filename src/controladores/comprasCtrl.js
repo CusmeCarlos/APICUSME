@@ -2,6 +2,8 @@ import { conmysql } from '../db.js';  // Importar el pool de conexiones
 
 export async function procesarCompra(req, res) {
   const { clienteId, productos } = req.body;
+  
+  let connection;  // Declaramos la variable fuera del bloque try
 
   // Validación de los productos
   if (!Array.isArray(productos) || productos.length === 0) {
@@ -17,7 +19,7 @@ export async function procesarCompra(req, res) {
 
   try {
     // Obtener la conexión del pool
-    const connection = await conmysql.getConnection();
+    connection = await conmysql.getConnection();
 
     // Iniciar la transacción
     await connection.beginTransaction();
@@ -44,7 +46,9 @@ export async function procesarCompra(req, res) {
     res.status(201).json({ message: 'Compra realizada con éxito' });
   } catch (error) {
     // Si hay algún error, deshacer la transacción
-    await conmysql.rollback();
+    if (connection) {
+      await connection.rollback();
+    }
     res.status(500).json({ error: 'Error al procesar la compra' });
   } finally {
     // Liberar la conexión del pool (solo cuando se usa una conexión individual)
