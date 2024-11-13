@@ -1,4 +1,7 @@
-import app from './app.js'
-import {PORT} from './config.js'
-app.listen(PORT);//3000
-console.log('Servidor está ejecutando en el puerto',PORT)
+// src/index.js
+import app from './app.js';  // Importa la instancia de app desde app.js
+import { PORT } from './config.js';  // Importa el puerto desde config.js
+
+app.listen(PORT, () => {
+  console.log(`Servidor está ejecutando en el puerto ${PORT}`);
+});
