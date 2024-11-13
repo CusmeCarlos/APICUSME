@@ -11,7 +11,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const app=express();
 const corsOptions={
-    origin:'https://apicusme-production.up.railway.app/',//la direccion del dominio del servidor
+    origin:'https://apicusme-production.up.railway.app/api/',//la direccion del dominio del servidor
     methods:['GET','POST','PUT','PATCH','DELETE'],
     credentials:true
 }
