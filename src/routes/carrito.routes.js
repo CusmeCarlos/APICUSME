@@ -1,13 +1,10 @@
-import express from 'express';
-import { obtenerCarrito, agregarAlCarrito, eliminarDelCarrito } from '../controladores/carritoCtrl.js';
+// En carrito.routes.js
+import { Router } from 'express';
+import { agregarAlCarrito, grabarCompra } from '../controladores/carritoCtrl.js';
 
-const router = express.Router();
+const router = Router();
 
-// Definir las rutas del carrito
-router.get('/', obtenerCarrito); // Obtener carrito
-router.post('/agregar', agregarAlCarrito); // Agregar producto al carrito
-router.delete('/eliminar/:id', eliminarDelCarrito); // Eliminar producto del carrito
+router.post('/', agregarAlCarrito);
+router.post('/comprar', grabarCompra);
 
-// Exportar las rutas del carrito
 export default router;
-
