@@ -1,5 +1,4 @@
 import { conmysql } from '../db.js';  // Importar el pool de conexiones
-import {procesarCompra} from '../controladores/comprasCtrl.js'
 
 export async function procesarCompra(req, res) {
   const { clienteId, productos } = req.body;
