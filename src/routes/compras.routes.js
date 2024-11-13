@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { getCarrito, agregarAlCarrito, realizarCompra } from '../controllers/compras.controller.js';
+import { getCarrito, agregarAlCarrito, realizarCompra } from '../controladores/comprasCtrl.js';
 
 const router = Router();
 
