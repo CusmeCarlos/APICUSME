@@ -3,6 +3,6 @@ import { registrarCompra } from '../controladores/comprasCtrl.js';
 
 const router = Router();
 
-router.post('/compras', registrarCompra);
+router.get('/compras', registrarCompra);
 
 export default router;
