@@ -7,6 +7,17 @@ import usuariosRoutes from './routes/usuarios.routes.js';
 import productosRoutes from './routes/productos.routes.js';
 import carritoRoutes from './routes/carrito.routes.js';
 import comprasRoutes from './routes/compras.routes.js';
+import { conmysql } from './db.js';
+import ubicacionesRoutes from './routes/ubicaciones.routes.js';
+// Probar la conexión a la base de datos al iniciar el servidor
+conmysql.getConnection()
+    .then((connection) => {
+        console.log("Conexión exitosa a la base de datos");
+        connection.release();  // Libera la conexión después de la prueba
+    })
+    .catch((err) => {
+        console.error("Error al conectar a la base de datos:", err);
+    });
 // definir módulo de ES
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -29,6 +40,9 @@ app.use('/api', usuariosRoutes);
 app.use('/api', productosRoutes);
 app.use('/api', carritoRoutes);
 app.use('/api', comprasRoutes);
+app.use('/api', ubicacionesRoutes);
+
+
 
 // Manejo de rutas no encontradas
 app.use((req, res, next) => {
