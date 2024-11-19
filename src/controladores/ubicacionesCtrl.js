@@ -1,5 +1,5 @@
 // src/controllers/ubicaciones.controller.js
-import { conmysql } from '../db.js';  // Asegúrate de que esté correctamente importado
+import { conmysql } from '../db.js'
 
 export const crearUbicacion = async (req, res) => {
   const { lat, lng, titulo, medida } = req.body;
