@@ -1,10 +1,9 @@
 // src/routes/ubicaciones.routes.js
 import { Router } from 'express'
-import { crearUbicacion } from '../controladores/ubicacionesCtrl.js';
+import {listarUbicaciones,} from '../controladores/ubicacionesCtrl.js'
 const router = Router();
 
 // Ruta POST para crear una nueva ubicación
-router.get('/ubicaciones', crearUbicacion);
-router.post('/ubicaciones', crearUbicacion);
+router.get('/ubicaciones', listarUbicaciones);
 
 export default router;
