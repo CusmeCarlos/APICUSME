@@ -1,6 +1,7 @@
 {
   "name": "api2024_2",
   "version": "1.0.0",
+  "type": "module",
   "description": "API para registro de servicio social o prácticas profesionales",
   "main": "src/index.js",
   "scripts": {
