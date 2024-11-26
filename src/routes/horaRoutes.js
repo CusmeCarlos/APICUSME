@@ -1,14 +1,17 @@
 import { Router } from 'express';
-import {
-  registrarHora,
-  obtenerHorasPorUsuario,
-  aprobarHora
-} from '../controladores/HoraController.js';
+import { conmysql } from '../db.js';
 
 const router = Router();
 
-router.post('/horas', registrarHora);
-router.get('/horas/:id_usuario', obtenerHorasPorUsuario);
-router.patch('/horas/:id_hora', aprobarHora);
+// Obtener todas las horas
+router.get('/horas', async (req, res) => {
+  try {
+    const [rows] = await conmysql.query('SELECT * FROM Horas');
+    res.json(rows);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Error al obtener las horas' });
+  }
+});
 
 export default router;

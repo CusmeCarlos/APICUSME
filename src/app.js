@@ -5,8 +5,8 @@ import { fileURLToPath } from 'url';
 import actividadRoutes from './routes/actividadRoutes.js';
 import horaRoutes from './routes/horaRoutes.js';
 import reporteRoutes from './routes/reporteRoutes.js';
+import usuarioRoutes from './routes/UsuariosRoutes.js'; // Ruta de usuarios
 import { conmysql } from './db.js';
-import UsuarioRoutes from './routes/UsuariosRoutes.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -23,18 +23,14 @@ app.use(cors(corsOptions));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-app.use('/api', actividadRoutes);
-app.use('/api', horaRoutes);
-app.use('/api', UsuarioRoutes)
-app.use('/api', reporteRoutes);
-
-app.get('/api/test', (req, res) => {
-    res.json({ message: 'La API está funcionando correctamente.' });
-  });
-  
+// Usar las rutas
+app.use('/api', usuarioRoutes);  // Ruta de usuarios
+app.use('/api', actividadRoutes);  // Ruta de actividades
+app.use('/api', horaRoutes);  // Ruta de horas
+app.use('/api', reporteRoutes);  // Ruta de reportes
 
 app.use((req, res, next) => {
-  res.status(404).json({ message: 'Endpoint not found' });
+  res.status(404).json({ message: 'Endpoint no encontrado' });
 });
 
 export default app;
