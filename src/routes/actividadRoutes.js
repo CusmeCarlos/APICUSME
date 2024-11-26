@@ -1,22 +1,17 @@
-import express from 'express';
+import { Router } from 'express';
 import { conmysql } from '../db.js';
 
-const router = express.Router();
+const router = Router();
 
-// Ruta para insertar una actividad
-router.post('/actividades', (req, res) => {
-  const { descripcion, tipo_actividad, estudiante_id } = req.body;
-  const query = `
-    INSERT INTO Actividades (descripcion, tipo_actividad, estudiante_id)
-    VALUES (?, ?, ?)
-  `;
-
-  conmysql.query(query, [descripcion, tipo_actividad, estudiante_id], (err, result) => {
-    if (err) {
-      return res.status(500).json({ error: err.message });
-    }
-    res.status(201).json({ message: 'Actividad insertada correctamente', result });
-  });
+// Obtener todas las actividades
+router.get('/actividades', async (req, res) => {
+  try {
+    const [rows] = await conmysql.query('SELECT * FROM Actividades');
+    res.json(rows);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Error al obtener actividades' });
+  }
 });
 
 export default router;
