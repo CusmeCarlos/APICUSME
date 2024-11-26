@@ -28,6 +28,11 @@ app.use('/api', horaRoutes);
 app.use('/api', UsuarioRoutes)
 app.use('/api', reporteRoutes);
 
+app.get('/api/test', (req, res) => {
+    res.json({ message: 'La API está funcionando correctamente.' });
+  });
+  
+
 app.use((req, res, next) => {
   res.status(404).json({ message: 'Endpoint not found' });
 });
