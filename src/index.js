@@ -1,7 +1,6 @@
-// src/index.js
-import app from './app.js';  // Importa la instancia de app desde app.js
-import { PORT } from './config.js';  // Importa el puerto desde config.js
+import app from './app.js';
 
+const PORT = process.env.PORT || 3000; // Usa el puerto dinámico de Railway o un valor predeterminado
 app.listen(PORT, () => {
-  console.log(`Servidor está ejecutando en el puerto ${PORT}`);
+    console.log(`Servidor está ejecutando en el puerto ${PORT}`);
 });
