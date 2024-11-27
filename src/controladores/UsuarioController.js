@@ -1,7 +1,5 @@
-import bcrypt from 'bcryptjs';
 import { conmysql } from '../db.js';
 
-// Obtener todos los usuarios
 export const obtenerUsuarios = async (req, res) => {
   try {
     const [rows] = await conmysql.query('SELECT * FROM usuarios');
@@ -11,39 +9,19 @@ export const obtenerUsuarios = async (req, res) => {
   }
 };
 
-// Crear un nuevo usuario
 export const crearUsuario = async (req, res) => {
-  const { nombre, correo, password, tipo_usuario } = req.body;
-  
-  // Validación básica
-  if (!nombre || !correo || !password || !tipo_usuario) {
-    return res.status(400).json({ error: 'Todos los campos son requeridos' });
-  }
-  
+  const { nombre, correo, tipo_usuario } = req.body;
   try {
-    // Encriptar la contraseña
-    const hashedPassword = await bcrypt.hash(password, 10);
-
-    // Insertar el nuevo usuario en la base de datos
     const [result] = await conmysql.query(
-      'INSERT INTO usuarios (nombre, correo, password, tipo_usuario) VALUES (?, ?, ?, ?)',
-      [nombre, correo, hashedPassword, tipo_usuario]
+      'INSERT INTO usuarios (nombre, correo, tipo_usuario) VALUES (?, ?, ?)',
+      [nombre, correo, tipo_usuario]
     );
-
-    // Responder con los datos del usuario recién creado
-    res.status(201).json({
-      id: result.insertId,
-      nombre,
-      correo,
-      tipo_usuario
-    });
+    res.status(201).json({ id: result.insertId, nombre, correo, tipo_usuario });
   } catch (error) {
-    console.error('Error en la creación del usuario:', error);
-    res.status(500).json({ error: 'Error al registrar el usuario' });
+    res.status(500).json({ error: error.message });
   }
 };
 
-// Actualizar un usuario existente
 export const actualizarUsuario = async (req, res) => {
   const { id } = req.params;
   const { nombre, correo, tipo_usuario } = req.body;
@@ -58,7 +36,6 @@ export const actualizarUsuario = async (req, res) => {
   }
 };
 
-// Eliminar un usuario
 export const eliminarUsuario = async (req, res) => {
   const { id } = req.params;
   try {
@@ -66,5 +43,5 @@ export const eliminarUsuario = async (req, res) => {
     res.status(200).json({ message: 'Usuario eliminado correctamente' });
   } catch (error) {
     res.status(500).json({ error: error.message });
-  }
+  } 
 };
