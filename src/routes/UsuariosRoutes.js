@@ -1,16 +1,14 @@
 import { Router } from 'express';
-import { conmysql } from '../db.js';
+import { check } from 'express-validator';
+import { crearUsuario } from '../controladores/UsuarioController.js';
 
 const router = Router();
 
-router.get('/usuarios', async (req, res) => {
-  try {
-    const [rows] = await conmysql.query('SELECT * FROM Usuarios');
-    res.json(rows);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Error al obtener usuarios' });
-  }
-});
+// Validaciones para la creación de usuario
+router.post('/usuarios', [
+  check('nombre').notEmpty().withMessage('El nombre es obligatorio'),
+  check('correo').isEmail().withMessage('El correo debe ser válido'),
+  check('contraseña').isLength({ min: 6 }).withMessage('La contraseña debe tener al menos 6 caracteres'),
+], crearUsuario);
 
 export default router;
