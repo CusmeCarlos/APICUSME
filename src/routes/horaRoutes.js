@@ -1,14 +1,9 @@
-import { Router } from 'express';
-import { registrarHora, obtenerHorasPorUsuario, aprobarHora } from '../controladores/HoraController.js';
-import autenticar from '../middlewares/authMiddleware.js';
+import express from 'express';
+import { obtenerHorasEstudiante } from '../controladores/horaController.js';
 
-const router = Router();
+const router = express.Router();
 
-// Ruta protegida para registrar horas
-router.post('/registrar', autenticar, registrarHora);
-
-// Rutas protegidas para obtener horas y aprobar horas
-router.get('/horas/:usuarioId', autenticar, obtenerHorasPorUsuario);
-router.put('/aprobar/:horaId', autenticar, aprobarHora);
+// Endpoint para obtener las horas registradas por un estudiante
+router.get('/horas', obtenerHorasEstudiante);
 
 export default router;

@@ -7,6 +7,7 @@ import horaRoutes from './routes/horaRoutes.js';
 import reporteRoutes from './routes/reporteRoutes.js';
 import usuarioRoutes from './routes/UsuariosRoutes.js'; // Ruta de usuarios
 import { conmysql } from './db.js';
+import authRoutes from './routes/authRoutes.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -28,6 +29,7 @@ app.use('/api', usuarioRoutes);  // Ruta de usuarios
 app.use('/api', actividadRoutes);  // Ruta de actividades
 app.use('/api', horaRoutes);  // Ruta de horas
 app.use('/api', reporteRoutes);  // Ruta de reportes
+app.use('/api', authRoutes);
 
 app.use((req, res, next) => {
   res.status(404).json({ message: 'Endpoint no encontrado' });

@@ -1,29 +1,38 @@
-import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
+import jwt from 'jsonwebtoken';
 import { conmysql } from '../db.js';
 
-export const login = async (req, res) => {
-  const { correo, password } = req.body; // Cambiar "contraseña" por "password"
+export const loginUsuario = async (req, res) => {
+  const { correo, contraseña } = req.body;
 
   try {
-    const [usuarios] = await conmysql.query('SELECT * FROM Usuarios WHERE correo = ?', [correo]);
+    const [rows] = await conmysql.query(
+      'SELECT id, nombre, password, rol_id FROM Usuarios WHERE correo = ?',
+      [correo]
+    );
 
-    if (usuarios.length === 0) {
-      return res.status(400).json({ error: 'Usuario no encontrado' });
+    if (rows.length === 0) {
+      return res.status(404).json({ error: 'Usuario no encontrado' });
     }
 
-    const usuario = usuarios[0];
+    const usuario = rows[0];
+    const passwordMatch = bcrypt.compareSync(contraseña, usuario.password);
 
-    // Cambiar "contraseña" por "password"
-    const esValido = await bcrypt.compare(password, usuario.password);
-
-    if (!esValido) {
-      return res.status(400).json({ error: 'Contraseña incorrecta' });
+    if (!passwordMatch) {
+      return res.status(401).json({ error: 'Contraseña incorrecta' });
     }
 
-    const token = jwt.sign({ userId: usuario.id }, 'secretkey', { expiresIn: '1h' });
+    // Generar token JWT
+    const token = jwt.sign(
+      { id: usuario.id, rol_id: usuario.rol_id },
+      'clave_secreta',
+      { expiresIn: '2h' }
+    );
 
-    res.status(200).json({ message: 'Autenticación exitosa', token });
+    res.json({ 
+      token, 
+      usuario: { id: usuario.id, nombre: usuario.nombre, rol_id: usuario.rol_id } 
+    });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
