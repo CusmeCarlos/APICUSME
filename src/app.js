@@ -33,9 +33,7 @@ app.use('/api', reporteRoutes);  // Ruta de reportes
 app.use('/api', authRoutes);
 app.post('/horas', autenticar, crearHoras);
 
-app.listen(3000, () => {
-  console.log('Servidor corriendo en puerto 3000');
-});
+
 
 app.use((req, res, next) => {
   res.status(404).json({ message: 'Endpoint no encontrado' });
