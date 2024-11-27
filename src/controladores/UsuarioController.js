@@ -11,11 +11,11 @@ export const crearUsuario = async (req, res) => {
   const { nombre, correo, rol_id, contraseña } = req.body;
 
   // Encriptar contraseña
-  const hashedPassword = bcrypt.hashSync(contraseña, 10); 
+  const hashedPassword = bcrypt.hashSync(contraseña, 10);
 
   try {
     const [result] = await conmysql.query(
-      'INSERT INTO Usuarios (nombre, correo, contraseña, rol_id) VALUES (?, ?, ?, ?)',
+      'INSERT INTO Usuarios (nombre, correo, password, rol_id, fecha_registro) VALUES (?, ?, ?, ?, NOW())',
       [nombre, correo, hashedPassword, rol_id]
     );
     res.status(201).json({ id: result.insertId, nombre, correo, rol_id });
