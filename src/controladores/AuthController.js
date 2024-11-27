@@ -3,7 +3,7 @@ import bcrypt from 'bcryptjs';
 import { conmysql } from '../db.js';
 
 export const login = async (req, res) => {
-  const { correo, contraseña } = req.body;
+  const { correo, password } = req.body; // Cambiar "contraseña" por "password"
 
   try {
     const [usuarios] = await conmysql.query('SELECT * FROM Usuarios WHERE correo = ?', [correo]);
@@ -14,7 +14,8 @@ export const login = async (req, res) => {
 
     const usuario = usuarios[0];
 
-    const esValido = await bcrypt.compare(contraseña, usuario.contraseña);
+    // Cambiar "contraseña" por "password"
+    const esValido = await bcrypt.compare(password, usuario.password);
 
     if (!esValido) {
       return res.status(400).json({ error: 'Contraseña incorrecta' });
