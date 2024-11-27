@@ -4,6 +4,7 @@
   "type": "module",
   "description": "API para registro de servicio social o prácticas profesionales",
   "main": "src/index.js",
+  
   "scripts": {
     "dev": "nodemon src/index.js",
     "start": "node src/index.js"
