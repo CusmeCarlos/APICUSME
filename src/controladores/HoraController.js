@@ -1,26 +1,40 @@
-import { conmysql } from '../db.js';
+import horasModel from '../models/horasModel.js';  // Asegúrate de que la ruta sea correcta
 import jwt from 'jsonwebtoken';
 
-export const obtenerHorasEstudiante = async (req, res) => {
-  const token = req.headers['authorization']?.split(' ')[1];
+const autenticar = (req, res, next) => {
+  const token = req.headers['authorization']?.split(' ')[1]; // El token se pasa como "Bearer <token>"
 
   if (!token) {
-    return res.status(403).json({ error: 'Token no proporcionado' });
+    return res.status(403).json({ error: 'Acceso denegado. No se proporcionó un token.' });
   }
+
+  jwt.verify(token, 'secretkey', (err, decoded) => {
+    if (err) {
+      return res.status(401).json({ error: 'Token inválido o expirado.' });
+    }
+
+    req.userId = decoded.userId; // Adjunta el userId decodificado al objeto req
+    next();
+  });
+};
+
+// Lógica para crear/insertar horas
+const crearHoras = async (req, res) => {
+  const { horas, actividad_id, validada, supervisor_id, estudiante_id } = req.body;
 
   try {
-    const decoded = jwt.verify(token, 'clave_secreta');
-    const estudianteId = decoded.id;
-
-    const [actividades] = await conmysql.query(
-      'SELECT fecha, descripcion, horas FROM Actividades WHERE estudiante_id = ?',
-      [estudianteId]
-    );
-
-    const totalHoras = actividades.reduce((sum, actividad) => sum + actividad.horas, 0);
-
-    res.json({ totalHoras, actividades });
+    const resultado = await horasModel.insertHoras({
+      horas,
+      actividad_id,
+      validada,
+      supervisor_id,
+      estudiante_id,
+      fecha_registro: new Date(),
+    });
+    res.status(200).json({ mensaje: 'Horas creadas correctamente', data: resultado });
   } catch (error) {
-    res.status(500).json({ error: 'Error al obtener las horas' });
+    res.status(500).json({ error: 'Error al crear horas', detalles: error });
   }
 };
+
+export { autenticar, crearHoras };

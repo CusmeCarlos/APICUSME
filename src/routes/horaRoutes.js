@@ -1,9 +1,9 @@
 import express from 'express';
-import { obtenerHorasEstudiante } from '../controladores/HoraController.js';
+import { autenticar, crearHoras } from '../controladores/HoraController.js';
 
 const router = express.Router();
 
-// Endpoint para obtener las horas registradas por un estudiante
-router.get('/horas', obtenerHorasEstudiante);
+// Ruta para crear horas, protegida por autenticación
+router.post('/horas', autenticar, crearHoras);
 
 export default router;

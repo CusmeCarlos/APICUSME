@@ -1,7 +1,8 @@
 import jwt from 'jsonwebtoken';
 
-// Middleware para proteger las rutas
-const autenticar = (req, res, next) => {
+// src/middlewares/authMiddleware.js
+
+export const autenticar = (req, res, next) => {
   const token = req.headers['authorization']?.split(' ')[1]; // El token se pasa como "Bearer <token>"
 
   if (!token) {
@@ -17,5 +18,6 @@ const autenticar = (req, res, next) => {
     next();
   });
 };
+
 
 export default autenticar;
