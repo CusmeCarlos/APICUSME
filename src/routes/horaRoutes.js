@@ -1,5 +1,5 @@
 import express from 'express';
-import { obtenerHorasEstudiante } from '../controladores/horaController.js';
+import { obtenerHorasEstudiante } from '../controladores/HoraController.js';
 
 const router = express.Router();
 
