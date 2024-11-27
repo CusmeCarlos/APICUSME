@@ -3,7 +3,7 @@ import cors from 'cors';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import actividadRoutes from './routes/actividadRoutes.js';
-import horaRoutes from './routes/horaRoutes.js';
+import horaRoutes from './routes/HoraRoutes.js';  // Ruta de horas
 import reporteRoutes from './routes/reporteRoutes.js';
 import usuarioRoutes from './routes/UsuariosRoutes.js'; // Ruta de usuarios
 import { conmysql } from './db.js';
